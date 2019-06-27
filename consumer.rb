@@ -9,13 +9,22 @@ logger = Logger.new(STDOUT)
 begin
   logger.debug 'Starting consumer...'
 
-  kafka = Kafka.new('kafka://127.0.0.1:9092')
+  begin
+    kafka = Kafka.new('kafka://127.0.0.1:9092')
 
-  logger.debug 'Listening for messages...'
-  kafka.each_message(topic: 'example') do |message|
-    event = JSON.parse(message.value)
-    time = Time.at(event['timestamp'].to_i).strftime('%Y-%m-%d %H:%M:%S %Z')
-    logger.debug "Offset: #{message.offset} Key: #{message.key} Message: #{event['name']} - #{time}"
+    consumer = kafka.consumer(group_id: 'consumer-group')
+    consumer.subscribe('example')
+
+    logger.debug 'Listening for messages...'
+    consumer.each_message do |message|
+      event = JSON.parse(message.value)
+      time = Time.at(event['timestamp'].to_i).strftime('%Y-%m-%d %H:%M:%S %Z')
+      logger.debug "Offset: #{message.offset} "\
+        "Key: #{message.key} "\
+        "Message: #{event['name']} - #{time}"
+    end
+  ensure
+    consumer.stop
   end
 rescue SignalException
   logger.debug 'Stopping consumer..'
