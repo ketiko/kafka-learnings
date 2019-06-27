@@ -18,14 +18,15 @@ begin
     consumer = kafka.consumer(group_id: KAFKA_GROUP)
     consumer.subscribe(KAFKA_TOPIC)
 
+    avro = AvroTurf::Messaging.new(registry_url: AVRO_REGISTRY_URL)
+
     logger.debug 'Listening for messages...'
     consumer.each_message do |message|
-      event = JSON.parse(message.value)
-      time = Time.at((event['timestamp'].to_f / 1_000)).strftime('%Y-%m-%d %H:%M:%S:%L %Z')
+      event = avro.decode(message.value, schema_name: AVRO_SCHEMA_NAME)
 
       logger.debug "Offset: #{message.offset} "\
         "Key: #{message.key} "\
-        "Message: #{event['name']} - #{time}"
+        "Message: #{event}"
     end
   ensure
     consumer.stop

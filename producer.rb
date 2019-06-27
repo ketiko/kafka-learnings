@@ -4,6 +4,9 @@
 require 'bundler'
 Bundler.require
 
+require 'dotenv/load'
+require_relative './constants'
+
 logger = Logger.new(STDOUT)
 
 begin
@@ -12,7 +15,7 @@ begin
   WaterDrop.setup do |config|
     config.deliver = true
     config.logger = logger
-    config.kafka.seed_brokers = %w[kafka://localhost:9092]
+    config.kafka.seed_brokers = Array(KAFKA_BROKER)
   end
 
   while true
@@ -24,7 +27,7 @@ begin
       name: 'Example Message',
       timestamp: Time.now.to_f * 1_000
     }
-    WaterDrop::SyncProducer.call(event.to_json, topic: 'example')
+    WaterDrop::SyncProducer.call(event.to_json, topic: KAFKA_TOPIC)
   end
 rescue SignalException
   logger.debug 'Stopping producer..'
