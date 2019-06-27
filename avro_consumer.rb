@@ -17,6 +17,7 @@ begin
 
   kafka = Kafka.new(
     KAFKA_BROKER,
+    logger: logger,
     ssl_ca_certs_from_system: true,
     sasl_plain_username: KAFKA_USERNAME,
     sasl_plain_password: KAFKA_PASSWORD
@@ -25,21 +26,24 @@ begin
   begin
     avro = AvroTurf::Messaging.new(registry_url: AVRO_REGISTRY_URL)
 
-    consumer = kafka.consumer(group_id: KAFKA_GROUP)
-    consumer.subscribe(KAFKA_TOPIC)
+    binding.pry
+    puts kafka.topics
 
-    begin
-      logger.debug 'Listening for messages...'
-      consumer.each_message do |message|
-        event = avro.decode(message.value, schema_name: AVRO_SCHEMA_NAME)
-
-        logger.debug "Offset: #{message.offset} "\
-          "Key: #{message.key} "\
-          "Message: #{event}"
-      end
-    ensure
-      consumer.stop
-    end
+    # consumer = kafka.consumer(group_id: KAFKA_GROUP)
+    # consumer.subscribe(KAFKA_TOPIC)
+    #
+    # begin
+    #   logger.debug 'Listening for messages...'
+    #   consumer.each_message do |message|
+    #     event = avro.decode(message.value, schema_name: AVRO_SCHEMA_NAME)
+    #
+    #     logger.debug "Offset: #{message.offset} "\
+    #       "Key: #{message.key} "\
+    #       "Message: #{event}"
+    #   end
+    # ensure
+    #   consumer.stop
+    # end
   ensure
     kafka.close
   end
