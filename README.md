@@ -5,7 +5,6 @@ Experimenting with kafka
 
 ```
 ./setup
-zookeeper-server-start /usr/local/etc/kafka/zookeeper.properties
 ```
 
 ## Running
