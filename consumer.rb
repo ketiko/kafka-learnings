@@ -4,7 +4,6 @@
 require 'bundler'
 Bundler.require
 
-require 'logger'
 logger = Logger.new(STDOUT)
 
 begin
@@ -14,7 +13,9 @@ begin
 
   logger.debug 'Listening for messages...'
   kafka.each_message(topic: 'example') do |message|
-    logger.debug "#{message.offset} #{message.key} #{message.value}"
+    event = JSON.parse(message.value)
+    time = Time.at(event['timestamp'].to_i).strftime('%Y-%m-%d %H:%M:%S %Z')
+    logger.debug "Offset: #{message.offset} Key: #{message.key} Message: #{event['name']} - #{time}"
   end
 rescue SignalException
   logger.debug 'Stopping consumer..'

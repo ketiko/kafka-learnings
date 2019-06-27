@@ -4,7 +4,6 @@
 require 'bundler'
 Bundler.require
 
-require 'logger'
 logger = Logger.new(STDOUT)
 
 begin
@@ -18,14 +17,15 @@ begin
 
   while true
     puts 'Publish a new message? (Y/n)'
-    if gets.chomp.strip.downcase == 'n'
-      break
-    end
+    break if gets.chomp.strip.downcase == 'n'
 
     logger.debug 'Publishing new message'
-    WaterDrop::SyncProducer.call({message: "Example Message #{Time.now} #{Time.now.to_i}"}.to_json, topic: 'example')
+    event = {
+      name: 'Example Message',
+      timestamp: Time.now.to_i
+    }
+    WaterDrop::SyncProducer.call(event.to_json, topic: 'example')
   end
-
 rescue SignalException
   logger.debug 'Stopping producer..'
   exit(0)
