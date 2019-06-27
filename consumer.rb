@@ -18,7 +18,8 @@ begin
     logger.debug 'Listening for messages...'
     consumer.each_message do |message|
       event = JSON.parse(message.value)
-      time = Time.at(event['timestamp'].to_i).strftime('%Y-%m-%d %H:%M:%S %Z')
+      time = Time.at((event['timestamp'].to_f / 1_000)).strftime('%Y-%m-%d %H:%M:%S:%L %Z')
+
       logger.debug "Offset: #{message.offset} "\
         "Key: #{message.key} "\
         "Message: #{event['name']} - #{time}"

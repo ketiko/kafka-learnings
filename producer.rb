@@ -22,7 +22,7 @@ begin
     logger.debug 'Publishing new message'
     event = {
       name: 'Example Message',
-      timestamp: Time.now.to_i
+      timestamp: Time.now.to_f * 1_000
     }
     WaterDrop::SyncProducer.call(event.to_json, topic: 'example')
   end
