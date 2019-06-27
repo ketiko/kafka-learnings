@@ -23,7 +23,7 @@ begin
     end
 
     logger.debug 'Publishing new message'
-    WaterDrop::SyncProducer.call({message: "Example Message"}.to_json, topic: 'example')
+    WaterDrop::SyncProducer.call({message: "Example Message #{Time.now} #{Time.now.to_i}"}.to_json, topic: 'example')
   end
 
 rescue SignalException
