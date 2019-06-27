@@ -26,8 +26,7 @@ begin
   begin
     avro = AvroTurf::Messaging.new(registry_url: AVRO_REGISTRY_URL)
 
-    binding.pry
-    puts kafka.topics
+    logger.debug "Topics: #{kafka.topics}"
 
     # consumer = kafka.consumer(group_id: KAFKA_GROUP)
     # consumer.subscribe(KAFKA_TOPIC)
