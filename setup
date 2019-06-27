@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+echo "== Installing homebrew packages =="
+brew tap homebrew/bundle
+brew bundle
+
+echo "== Installing dependencies =="
+gem update --system
+gem install bundler
+bundle check || bundle install
