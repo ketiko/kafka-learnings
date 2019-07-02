@@ -4,6 +4,7 @@
 require 'bundler'
 Bundler.require
 
+require 'dotenv/load'
 require_relative './constants'
 
 logger = Logger.new(STDOUT)

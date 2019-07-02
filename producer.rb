@@ -4,6 +4,7 @@
 require 'bundler'
 Bundler.require
 
+require 'dotenv/load'
 require_relative './constants'
 
 logger = Logger.new(STDOUT)
@@ -26,7 +27,9 @@ begin
       name: 'Example Message',
       timestamp: Time.now.to_f * 1_000
     }
-    WaterDrop::SyncProducer.call(event.to_json, topic: KAFKA_TOPIC)
+    # partition = rand(2) % 2
+    partition = 0
+    WaterDrop::SyncProducer.call(event.to_json, topic: KAFKA_TOPIC, partition: partition)
   end
 rescue SignalException
   logger.debug 'Stopping producer..'
