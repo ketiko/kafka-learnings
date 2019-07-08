@@ -26,14 +26,21 @@ begin
   )
 
   begin
-    logger.debug 'Listening for messages...'
-    kafka.each_message(topic: KAFKA_TOPIC) do |message|
-      event = JSON.parse(message.value)
-      time = Time.at((event['timestamp'].to_f / 1_000)).strftime('%Y-%m-%d %H:%M:%S:%L %Z')
+    consumer = kafka.consumer(group_id: KAFKA_GROUP)
+    consumer.subscribe(KAFKA_TOPIC)
 
-      logger.debug "Offset: #{message.offset} "\
-        "Key: #{message.key} "\
-        "Message: #{event['name']} - #{time}"
+    begin
+      logger.debug 'Listening for messages...'
+      consumer.each_message do |message|
+        event = JSON.parse(message.value)
+        time = Time.at((event['timestamp'].to_f / 1_000)).strftime('%Y-%m-%d %H:%M:%S:%L %Z')
+
+        logger.debug "Offset: #{message.offset} "\
+          "Key: #{message.key} "\
+          "Message: #{event['name']} - #{time}"
+      end
+    ensure
+      consumer.stop
     end
   ensure
     kafka.close

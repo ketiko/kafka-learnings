@@ -15,16 +15,21 @@ logger = Logger.new(STDOUT)
 begin
   logger.debug 'Starting avro consumer...'
 
-  kafka = Kafka.new(
-    KAFKA_BROKER,
-    logger: logger,
+  options = {}
+  options = {
     ssl_ca_certs_from_system: true,
     sasl_plain_username: KAFKA_USERNAME,
     sasl_plain_password: KAFKA_PASSWORD
+  } if KAFKA_PASSWORD
+
+  kafka = Kafka.new(
+    KAFKA_BROKER,
+    logger: logger,
+    **options
   )
 
   begin
-    avro = AvroTurf::Messaging.new(registry_url: AVRO_REGISTRY_URL)
+    # avro = AvroTurf::Messaging.new(registry_url: AVRO_REGISTRY_URL)
 
     logger.debug "Topics: #{kafka.topics}"
 
