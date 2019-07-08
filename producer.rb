@@ -16,6 +16,11 @@ begin
     config.deliver = true
     config.logger = logger
     config.kafka.seed_brokers = Array(KAFKA_BROKER)
+    if KAFKA_PASSWORD
+      config.kafka.ssl_ca_certs_from_system = true
+      config.kafka.sasl_plain_username = KAFKA_USERNAME
+      config.kafka.sasl_plain_password = KAFKA_PASSWORD
+    end
   end
 
   while true
@@ -27,9 +32,7 @@ begin
       name: 'Example Message',
       timestamp: Time.now.to_f * 1_000
     }
-    # partition = rand(2) % 2
-    partition = 0
-    WaterDrop::SyncProducer.call(event.to_json, topic: KAFKA_TOPIC, partition: partition)
+    WaterDrop::SyncProducer.call(event.to_json, topic: KAFKA_TOPIC)
   end
 rescue SignalException
   logger.debug 'Stopping producer..'
