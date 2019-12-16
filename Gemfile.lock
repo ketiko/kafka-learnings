@@ -58,7 +58,7 @@ GEM
       dry-types (~> 0.14.0)
     envlogic (1.1.0)
       dry-inflector (~> 0.1)
-    excon (0.64.0)
+    excon (0.71.0)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     karafka (1.2.13)
