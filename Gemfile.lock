@@ -85,7 +85,7 @@ GEM
     pry-byebug (3.7.0)
       byebug (~> 11.0)
       pry (~> 0.10)
-    rake (12.3.2)
+    rake (13.0.1)
     require_all (2.0.0)
     ruby-kafka (0.7.8)
       digest-crc
